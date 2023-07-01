@@ -2,12 +2,10 @@ package com.example.todoapplication.ui.screens.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.todoapplication.data.Task
 import com.example.todoapplication.data.TasksRepository
 import com.example.todoapplication.ui.screens.task.TaskDetail
 import com.example.todoapplication.ui.screens.task.toTask
 import com.example.todoapplication.ui.screens.task.toTaskDetail
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -19,7 +17,8 @@ class TodoHomeViewModel(
     private val tasksRepository: TasksRepository
 ): ViewModel() {
 
-    val homeUiState: StateFlow<List<HomeUiState>> = tasksRepository.getUncompletedTasksStream()
+    // 未アーカイブタスクのuiStateの取得
+    val homeUiState: StateFlow<List<HomeUiState>> = tasksRepository.getUnarchivedTasksStream()
         .map{List ->
             List!!.map{
                 HomeUiState(it.toTaskDetail())
@@ -30,6 +29,8 @@ class TodoHomeViewModel(
             initialValue = listOf()
     )
 
+    // タスクを完了済みに変更する機能
+    // タスク完了と同時に完了日の設定を行う
     fun updateIsCompleted(isCompletedFlag: Boolean = false, id: Int){
         viewModelScope.launch {
             val currentTask = homeUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
