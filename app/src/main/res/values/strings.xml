@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Todo Application</string>
+    <string name="task_detail_title">Task Detail</string>
+    <string name="task_edit_title">Task Edit</string>
+    <string name="task_entry_title">Task Entry</string>
+    <string name="task_none_text">タスクがありません</string>
+    <string name="back_button">Back</string>
+    <string name="task_name_label">タスク名</string>
+    <string name="is_completed_label">完了</string>
+    <string name="progress_label">進捗</string>
+    <string name="confirm_button_text">確定</string>
+    <string name="form_item_deadline_text">締め切り日</string>
+    <string name="save_button_text">Save</string>
+    <string name="delete_button_text">Delete</string>
+    <string name="progress_value_unit">%s %%</string>
+</resources>
