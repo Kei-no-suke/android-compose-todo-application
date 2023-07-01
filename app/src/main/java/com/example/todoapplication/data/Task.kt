@@ -12,5 +12,6 @@ data class Task(
     val progress: Int,
     val deadline: Date?,
     val isCompleted: Boolean,
-    val completedDate: Date?
+    val completedDate: Date?,
+    val isArchived: Boolean
 )

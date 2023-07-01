@@ -41,4 +41,10 @@ interface TaskDao {
 
     @Query("SELECT * from tasks WHERE isCompleted = 1 ORDER BY (deadline IS NULL),deadline ASC")
     fun getCompletedTasks(): Flow<List<Task>>
+
+    @Query("SELECT * from tasks WHERE isArchived = 0 ORDER BY (deadline IS NULL),deadline ASC")
+    fun getUnarchivedTasks(): Flow<List<Task>>
+
+    @Query("SELECT * from tasks WHERE isArchived = 1 ORDER BY (deadline IS NULL),deadline ASC")
+    fun getArchivedTasks(): Flow<List<Task>>
 }

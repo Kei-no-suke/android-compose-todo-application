@@ -10,6 +10,10 @@ interface TasksRepository {
 
     fun getCompletedTasksStream(): Flow<List<Task>?>
 
+    fun getUnarchivedTasksStream(): Flow<List<Task>?>
+
+    fun getArchivedTasksStream(): Flow<List<Task>?>
+
     fun getTaskStream(id: Int): Flow<Task?>
 
     suspend fun insertTask(task: Task)
