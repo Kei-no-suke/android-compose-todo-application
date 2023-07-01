@@ -57,7 +57,8 @@ data class TaskDetail(
     val progress: String = "",
     val deadline: Long? = null,
     val isCompleted: Boolean = false,
-    val completedDate: Long? = null
+    val completedDate: Long? = null,
+    val isArchived: Boolean = false
 )
 
 fun TaskDetail.toTask(): Task = Task(
@@ -66,7 +67,8 @@ fun TaskDetail.toTask(): Task = Task(
     progress = progress.toIntOrNull() ?: 0,
     deadline = if(deadline == null){ null }else{ Date(deadline) },
     isCompleted = isCompleted,
-    completedDate = if(completedDate == null){ null }else{ Date(completedDate) }
+    completedDate = if(completedDate == null){ null }else{ Date(completedDate) },
+    isArchived = isArchived
 )
 
 fun Task.toTaskUiState(isEntryValid: Boolean = false, isDisplayDeadlineDatePicker: Boolean = false): TaskUiState = TaskUiState(
@@ -81,5 +83,6 @@ fun Task.toTaskDetail(): TaskDetail = TaskDetail(
     progress = progress.toString(),
     deadline = if(deadline == null){ null }else{ deadline.time },
     isCompleted = isCompleted,
-    completedDate = if(completedDate == null){ null }else{ completedDate.time }
+    completedDate = if(completedDate == null){ null }else{ completedDate.time },
+    isArchived = isArchived
 )
