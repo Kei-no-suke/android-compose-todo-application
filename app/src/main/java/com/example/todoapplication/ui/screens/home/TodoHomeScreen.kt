@@ -9,21 +9,26 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ScopeUpdateScope
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.R
 import com.example.todoapplication.ui.AppViewModelProvider
@@ -50,6 +55,12 @@ fun TodoHomeScreen(
             TodoTopAppBar(
                 title = stringResource(id = HomeDestination.titleRes),
                 canNavigateBack = false
+            )
+        },
+        bottomBar = {
+            TodoBottomAppBar(
+                updateArchivedState = { viewModel.updateHomeArchivedState() },
+                isUnarchivedScreen = viewModel.homeArchivedState.isUnarchivedScreen
             )
         },
         floatingActionButton = {
@@ -148,5 +159,32 @@ fun TaskCard(
 
         }
 
+    }
+}
+
+@Composable
+fun TodoBottomAppBar(
+    updateArchivedState: () -> Unit,
+    isUnarchivedScreen: Boolean
+){
+    BottomAppBar() {
+        Column(){
+            IconButton(onClick = updateArchivedState,enabled = !isUnarchivedScreen) {
+                Icon(painter = painterResource(id = R.drawable.outline_task_24), contentDescription = null)
+            }
+            Text(
+                text = stringResource(id = R.string.task_list),
+                fontSize = 10.sp
+            )
+        }
+        Column(){
+            IconButton(onClick = updateArchivedState,enabled = isUnarchivedScreen) {
+                Icon(painter = painterResource(id = R.drawable.outline_archive_24), contentDescription = null)
+            }
+            Text(
+                text = stringResource(id = R.string.archived_list),
+                fontSize = 10.sp
+            )
+        }
     }
 }

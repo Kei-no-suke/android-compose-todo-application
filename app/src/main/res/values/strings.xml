@@ -13,4 +13,6 @@
     <string name="save_button_text">Save</string>
     <string name="delete_button_text">Delete</string>
     <string name="progress_value_unit">%s %%</string>
+    <string name="task_list">task</string>
+    <string name="archived_list">archived</string>
 </resources>
