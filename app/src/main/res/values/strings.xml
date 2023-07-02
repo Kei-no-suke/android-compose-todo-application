@@ -17,4 +17,6 @@
     <string name="archived_list">archived</string>
     <string name="add_button_text">new</string>
     <string name="edit_button_text">edit</string>
+    <string name="progress_text_box">進捗:%s %%</string>
+    <string name="deadline_text_box">締め切り日:%s</string>
 </resources>

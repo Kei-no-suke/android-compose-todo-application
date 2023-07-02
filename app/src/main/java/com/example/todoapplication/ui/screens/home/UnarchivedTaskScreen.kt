@@ -19,7 +19,6 @@ fun UnarchivedTaskScreen(
 ){
     val uiState = viewModel.homeUiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-
     Scaffold(
         topBar = {
             TodoTopAppBar(
@@ -35,15 +34,19 @@ fun UnarchivedTaskScreen(
         }
     ) {innerPadding ->
         if (uiState.value.size == 0){
-            Text(text = stringResource(id = R.string.task_none_text))
+            Text(
+                text = stringResource(id = R.string.task_none_text),
+                modifier = Modifier.padding(innerPadding)
+            )
         }else{
             TaskCardList(
                 modifier = Modifier.padding(innerPadding),
                 homeUiStateList = uiState.value,
-                onCheckedChange = {flag, id ->
-                    viewModel.updateIsCompleted(flag, id)
-                },
-                navigateToDetailScreen = { }
+                onClickCheckbox = { flag, id ->
+                    viewModel.updateIsCompleted(flag, id) },
+                onArchiveButtonClick = { id ->
+                    viewModel.updateIsArchived(id)
+                }
             )
         }
 

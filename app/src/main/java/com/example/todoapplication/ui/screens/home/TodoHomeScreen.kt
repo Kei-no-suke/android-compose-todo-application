@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -52,27 +51,7 @@ fun TodoHomeScreen(
 
 }
 
-@Composable
-fun TaskCardList(
-    modifier: Modifier = Modifier,
-    homeUiStateList: List<HomeUiState>,
-    onCheckedChange: (Boolean, Int) -> Unit,
-    navigateToDetailScreen: (Int) -> Unit
-) {
-    LazyColumn(modifier = modifier){
-        items(homeUiStateList.size){
-            TaskCard(
-                homeUiState = homeUiStateList[it],
-                onCheckedChange = onCheckedChange,
-                modifier = Modifier.clickable(
-                    enabled = true
-                ){
-                    navigateToDetailScreen(homeUiStateList[it].taskDetail.id)
-                }
-            )
-        }
-    }
-}
+
 
 @Composable
 fun TaskCard(

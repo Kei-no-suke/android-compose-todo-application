@@ -17,35 +17,35 @@ import com.example.todoapplication.ui.TodoTopAppBar
 fun ArchivedTaskScreen(
     viewModel: TodoHomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val uiState = viewModel.homeUiState.collectAsState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        topBar = {
-            TodoTopAppBar(
-                title = stringResource(id = HomeDestination.titleRes),
-                canNavigateBack = false
-            )
-        },
-        bottomBar = {
-            TodoBottomAppBar(
-                updateHomeScreenState = { viewModel.updateHomeArchivedState(it) },
-                homeScreenState = viewModel.homeArchivedState.homeScreenState
-            )
-        }
-    ) {innerPadding ->
-        if (uiState.value.size == 0){
-            Text(text = stringResource(id = R.string.task_none_text))
-        }else{
-            TaskCardList(
-                modifier = Modifier.padding(innerPadding),
-                homeUiStateList = uiState.value,
-                onCheckedChange = {flag, id ->
-                    viewModel.updateIsCompleted(flag, id)
-                },
-                navigateToDetailScreen = { }
-            )
-        }
-
-    }
+//    val uiState = viewModel.homeUiState.collectAsState()
+//    val coroutineScope = rememberCoroutineScope()
+//
+//    Scaffold(
+//        topBar = {
+//            TodoTopAppBar(
+//                title = stringResource(id = HomeDestination.titleRes),
+//                canNavigateBack = false
+//            )
+//        },
+//        bottomBar = {
+//            TodoBottomAppBar(
+//                updateHomeScreenState = { viewModel.updateHomeArchivedState(it) },
+//                homeScreenState = viewModel.homeArchivedState.homeScreenState
+//            )
+//        }
+//    ) {innerPadding ->
+//        if (uiState.value.size == 0){
+//            Text(text = stringResource(id = R.string.task_none_text))
+//        }else{
+//            TaskCardList(
+//                modifier = Modifier.padding(innerPadding),
+//                homeUiStateList = uiState.value,
+//                onCheckedChange = {flag, id ->
+//                    viewModel.updateIsCompleted(flag, id)
+//                },
+//                navigateToDetailScreen = { }
+//            )
+//        }
+//
+//    }
 }

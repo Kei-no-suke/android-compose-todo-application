@@ -30,18 +30,21 @@ class TodoHomeViewModel(
 
     fun updateUiState(taskDetail: TaskDetail){
         val currentTaskUiState = taskUiState
-        taskUiState = currentTaskUiState.copy(taskDetail = taskDetail, isEntryValid = validateInput(taskDetail))
+        taskUiState = currentTaskUiState
+            .copy(taskDetail = taskDetail, isEntryValid = validateInput(taskDetail))
     }
 
     fun updateDeadline(deadline: Long?){
         val currentTaskUiState = taskUiState
-        val currentTaskDetail = currentTaskUiState.taskDetail.copy(deadline = deadline)
+        val currentTaskDetail = currentTaskUiState.taskDetail
+            .copy(deadline = deadline)
         updateUiState(taskDetail = currentTaskDetail)
     }
 
     fun updateName(name: String){
         val currentTaskUiState = taskUiState
-        val currentTaskDetail = currentTaskUiState.taskDetail.copy(name = name)
+        val currentTaskDetail = currentTaskUiState.taskDetail
+            .copy(name = name)
         updateUiState(taskDetail = currentTaskDetail)
     }
 
@@ -66,23 +69,29 @@ class TodoHomeViewModel(
     var homeArchivedState by mutableStateOf(HomeArchivedState(homeScreenState = HomeScreenState.Unarchived.name))
         private set
 
-    private val taskStream =
-        if(homeArchivedState.homeScreenState == HomeScreenState.Unarchived.name)
-        { tasksRepository.getArchivedTasksStream() }
-        else
-        { tasksRepository.getUnarchivedTasksStream() }
-
     // 未アーカイブタスクのuiStateの取得
-    val homeUiState: StateFlow<List<HomeUiState>> = taskStream
-        .map{List ->
-            List!!.map{
-                HomeUiState(it.toTaskDetail())
-            }
-    }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-            initialValue = listOf()
-    )
+    val homeUiState: StateFlow<List<HomeUiState>> =
+        if(homeArchivedState.homeScreenState == HomeScreenState.Archive.name) {
+            tasksRepository.getArchivedTasksStream().map { List ->
+                List!!.map {
+                    HomeUiState(it.toTaskDetail())
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = listOf()
+            )
+        }else{
+            tasksRepository.getUnarchivedTasksStream().map { List ->
+                List!!.map {
+                    HomeUiState(it.toTaskDetail())
+                }
+            }.stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+                initialValue = listOf()
+            )
+        }
 
     // タスクを完了済みに変更する機能
     // タスク完了と同時に完了日の設定を行う
@@ -92,6 +101,15 @@ class TodoHomeViewModel(
             tasksRepository.updateTask(currentTask.copy(
                 isCompleted = isCompletedFlag,
                 completedDate = if(isCompletedFlag){ Date() }else{ null }
+            ))
+        }
+    }
+
+    fun updateIsArchived(id: Int){
+        viewModelScope.launch {
+            val currentTask = homeUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            tasksRepository.updateTask(currentTask.copy(
+                isArchived = !currentTask.isArchived
             ))
         }
     }
