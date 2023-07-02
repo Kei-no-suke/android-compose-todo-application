@@ -8,9 +8,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.todoapplication.TodoApplication
 import com.example.todoapplication.ui.screens.home.TodoHomeViewModel
 import com.example.todoapplication.ui.screens.task.TaskDetailViewModel
-import com.example.todoapplication.ui.screens.task.TaskEditScreen
 import com.example.todoapplication.ui.screens.task.TaskEditViewModel
-import com.example.todoapplication.ui.screens.task.TaskEntryViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
@@ -31,13 +29,6 @@ object AppViewModelProvider {
         initializer {
             TaskEditViewModel(
                 this.createSavedStateHandle(),
-                todoApplication().container.tasksRepository
-            )
-        }
-
-        // TaskEntryViewModelの初期化
-        initializer {
-            TaskEntryViewModel(
                 todoApplication().container.tasksRepository
             )
         }

@@ -5,16 +5,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -29,8 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.R
 import com.example.todoapplication.ui.AppViewModelProvider
-import com.example.todoapplication.ui.TodoApp
-import com.example.todoapplication.ui.TodoTopAppBar
 import com.example.todoapplication.ui.navigation.NavigationDestination
 import com.example.todoapplication.ui.theme.TodoApplicationTheme
 
@@ -48,47 +42,14 @@ fun TodoHomeScreen(
 ){
     val uiState = viewModel.homeUiState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
-    
-    Scaffold(
-        topBar = {
-            TodoTopAppBar(
-                title = stringResource(id = HomeDestination.titleRes),
-                canNavigateBack = false
-            )
-        },
-        bottomBar = {
-            TodoBottomAppBar(
-                updateHomeScreenState = { viewModel.updateHomeArchivedState(it) },
-                homeScreenState = viewModel.homeArchivedState.homeScreenState
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToTaskEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(16.dp)
-            ){
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = R.string.task_entry_title)
-                )
-            }
-        }
-    ) {innerPadding ->
-        if (uiState.value.size == 0){
-            Text(text = stringResource(id = R.string.task_none_text))
-        }else{
-            TaskCardList(
-                modifier = Modifier.padding(innerPadding),
-                homeUiStateList = uiState.value,
-                onCheckedChange = {flag, id ->
-                    viewModel.updateIsCompleted(flag, id)
-                },
-                navigateToDetailScreen = navigateToDetailScreen
-            )
-        }
-        
+
+    when(viewModel.homeArchivedState.homeScreenState){
+        HomeScreenState.Unarchived.name -> UnarchivedTaskScreen()
+        HomeScreenState.Add.name -> AddNewTaskScreen()
+        HomeScreenState.Archive.name -> ArchivedTaskScreen()
     }
+
+
 }
 
 @Composable
@@ -209,9 +170,11 @@ fun TodoBottomAppBar(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable(enabled = !isUnarchived){
-                updateHomeScreenState(HomeScreenState.Unarchived.name)
-            }.weight(1f)
+            modifier = Modifier
+                .clickable(enabled = !isUnarchived) {
+                    updateHomeScreenState(HomeScreenState.Unarchived.name)
+                }
+                .weight(1f)
         ){
             Icon(
                 painter = painterResource(id = R.drawable.outline_task_24),
@@ -226,9 +189,11 @@ fun TodoBottomAppBar(
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable(enabled = !isArchived){
-                updateHomeScreenState(HomeScreenState.Archive.name)
-            }.weight(1f)
+            modifier = Modifier
+                .clickable(enabled = !isArchived) {
+                    updateHomeScreenState(HomeScreenState.Archive.name)
+                }
+                .weight(1f)
         ){
             Icon(
                 painter = painterResource(id = R.drawable.outline_archive_24),
@@ -243,9 +208,11 @@ fun TodoBottomAppBar(
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable(enabled = !isAdd){
-                updateHomeScreenState(HomeScreenState.Add.name)
-            }.weight(1f)
+            modifier = Modifier
+                .clickable(enabled = !isAdd) {
+                    updateHomeScreenState(HomeScreenState.Add.name)
+                }
+                .weight(1f)
         ){
             Icon(
                 painter = painterResource(id = R.drawable.baseline_add_task_24),
@@ -260,7 +227,9 @@ fun TodoBottomAppBar(
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.clickable(enabled = false){}.weight(1f)
+            modifier = Modifier
+                .clickable(enabled = false) {}
+                .weight(1f)
         ){
             Icon(
                 painter = painterResource(id = R.drawable.baseline_edit_24),

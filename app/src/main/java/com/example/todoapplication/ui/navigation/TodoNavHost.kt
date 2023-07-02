@@ -14,8 +14,6 @@ import com.example.todoapplication.ui.screens.task.TaskDetailDestination
 import com.example.todoapplication.ui.screens.task.TaskDetailScreen
 import com.example.todoapplication.ui.screens.task.TaskEditDestination
 import com.example.todoapplication.ui.screens.task.TaskEditScreen
-import com.example.todoapplication.ui.screens.task.TaskEntryDestination
-import com.example.todoapplication.ui.screens.task.TaskEntryScreen
 
 @Composable
 fun TodoNavHost(
@@ -28,16 +26,12 @@ fun TodoNavHost(
     ){
         composable(route = HomeDestination.route){
             TodoHomeScreen(
-                navigateToTaskEntry = { navController.navigate(TaskEntryDestination.route) },
+                navigateToTaskEntry = {},
                 navigateToDetailScreen = {
                     Log.d("NavHost", it.toString())
                     navController.navigate("${TaskDetailDestination.route}/${it}")
                 }
             )
-        }
-
-        composable(route = TaskEntryDestination.route){
-            TaskEntryScreen(navigateBack = { navController.popBackStack() })
         }
 
         composable(

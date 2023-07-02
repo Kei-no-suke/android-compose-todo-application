@@ -2,7 +2,6 @@ package com.example.todoapplication.ui.screens.task
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -15,6 +14,8 @@ import com.example.todoapplication.R
 import com.example.todoapplication.ui.AppViewModelProvider
 import com.example.todoapplication.ui.TodoTopAppBar
 import com.example.todoapplication.ui.navigation.NavigationDestination
+import com.example.todoapplication.ui.screens.home.DatePickerDialogArea
+import com.example.todoapplication.ui.screens.home.TextFieldArea
 import kotlinx.coroutines.launch
 
 object TaskEditDestination : NavigationDestination {
