@@ -15,4 +15,6 @@
     <string name="progress_value_unit">%s %%</string>
     <string name="task_list">task</string>
     <string name="archived_list">archived</string>
+    <string name="add_button_text">new</string>
+    <string name="edit_button_text">edit</string>
 </resources>

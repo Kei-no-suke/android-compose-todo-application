@@ -16,16 +16,23 @@ import java.util.Date
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
+enum class HomeScreenState{
+    Archive, Unarchived, Add, Edit
+}
+
 class TodoHomeViewModel(
     private val tasksRepository: TasksRepository
 ): ViewModel() {
 
-    // ホーム画面に表示しているタスクが未アーカイブかアーカイブ済みかの状態
-    var homeArchivedState by mutableStateOf(HomeArchivedState())
+    // ホーム画面の状態 | Archive, Unarchived, Add |
+    var homeArchivedState by mutableStateOf(HomeArchivedState(homeScreenState = HomeScreenState.Unarchived.name))
         private set
 
-    private val taskStream = if(homeArchivedState.isUnarchivedScreen){ tasksRepository.getUnarchivedTasksStream() }
-    else { tasksRepository.getArchivedTasksStream() }
+    private val taskStream =
+        if(homeArchivedState.homeScreenState == HomeScreenState.Unarchived.name)
+        { tasksRepository.getArchivedTasksStream() }
+        else
+        { tasksRepository.getUnarchivedTasksStream() }
 
     // 未アーカイブタスクのuiStateの取得
     val homeUiState: StateFlow<List<HomeUiState>> = taskStream
@@ -51,10 +58,9 @@ class TodoHomeViewModel(
         }
     }
 
-    // ホーム画面の表示状態を更新する(アーカイブ済み or 未アーカイブ)
-    fun updateHomeArchivedState(){
-        val currentState = homeArchivedState.isUnarchivedScreen
-        homeArchivedState = HomeArchivedState(!currentState)
+    // ホーム画面の表示状態を更新する | Archive, Unarchived, Add |
+    fun updateHomeArchivedState(homeScreenState: String){
+        homeArchivedState = HomeArchivedState(homeScreenState)
     }
 
     companion object {
@@ -67,5 +73,7 @@ data class HomeUiState(
 )
 
 data class HomeArchivedState(
-    val isUnarchivedScreen: Boolean = true
+    val homeScreenState: String
 )
+
+
