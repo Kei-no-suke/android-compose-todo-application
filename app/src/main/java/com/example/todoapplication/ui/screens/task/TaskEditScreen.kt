@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.R
 import com.example.todoapplication.ui.AppViewModelProvider
@@ -104,7 +105,7 @@ fun EditFormItem(
             )
         }
         // セーブボタン
-        Button(onClick = onSaveClick) {
+        Button(onClick = onSaveClick, modifier = Modifier.padding(8.dp)) {
             Text(text = stringResource(id = R.string.save_button_text))
         }
     }

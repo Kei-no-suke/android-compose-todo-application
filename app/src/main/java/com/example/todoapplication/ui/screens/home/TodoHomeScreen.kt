@@ -2,11 +2,7 @@ package com.example.todoapplication.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -19,7 +15,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.R
@@ -110,56 +105,6 @@ fun TodoHomeScreen(
     }
 }
 
-
-
-@Composable
-fun TaskCard(
-    homeUiState: HomeUiState,
-    onCheckedChange: (Boolean, Int) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val id: Int = homeUiState.taskDetail.id
-    Card(
-        modifier = modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
-    ){
-        Column(modifier = Modifier.padding(8.dp)) {
-            Text(text = homeUiState.taskDetail.name)
-            TaskProgressDisplayBox(
-                labelResId = R.string.progress_label,
-                progress = homeUiState.taskDetail.progress.toFloat() / 100f
-            )
-            if(homeUiState.taskDetail.deadline == null){
-                TaskCompletedCheckbox(
-                    labelResId = R.string.is_completed_label,
-                    taskDetailElement = homeUiState.taskDetail.isCompleted,
-                    onClickCheckbox = {onCheckedChange(it, id)})
-            }else{
-                Row() {
-                    TaskDeadlineBox(
-                        labelResId = R.string.form_item_deadline_text,
-                        deadline = homeUiState.taskDetail.deadline!!,
-                        modifier = Modifier.padding(end = 10.dp)
-                    )
-                    TaskCompletedCheckbox(
-                        labelResId = R.string.is_completed_label,
-                        taskDetailElement = homeUiState.taskDetail.isCompleted,
-                        onClickCheckbox = {onCheckedChange(it, id)}
-                    )
-                }
-            }
-
-        }
-
-    }
-}
-
 @Composable
 fun TodoBottomAppBar(
     updateDisplayTaskState: (DisplayTaskType) -> Unit,
@@ -187,7 +132,6 @@ fun TodoBottomAppBar(
     }
     val activeColor = MaterialTheme.colorScheme.primary
     val nonActiveColor = MaterialTheme.colorScheme.onSurface
-    val unableColor = MaterialTheme.colorScheme.outlineVariant
 
     val unarchivedColor = if(isUnarchived){ activeColor }else{ nonActiveColor }
     val archiveColor = if(isArchived){ activeColor }else{ nonActiveColor }

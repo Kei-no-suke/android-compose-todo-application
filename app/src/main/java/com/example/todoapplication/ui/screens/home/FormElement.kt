@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
@@ -168,11 +169,14 @@ fun TextFieldArea(
     unitText: String = "",
     modifier: Modifier = Modifier
 ){
-    Row(modifier = modifier){
+    Row(modifier = modifier.padding(8.dp)){
         Text(
             text = stringResource(id = labelResId),
             modifier = Modifier.weight(1f)
         )
+        if(isDisplayUnit) {
+            Spacer(modifier = Modifier.weight(1f))
+        }
         OutlinedTextField(
             value = inputFieldText,
             onValueChange = onValueChange,
@@ -181,10 +185,14 @@ fun TextFieldArea(
         if(isDisplayUnit){
             Text(
                 text = unitText,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .align(Alignment.Bottom),
+                fontSize = 20.sp
             )
         }
     }
+    Divider(thickness = 2.dp)
 }
 
 // デイトピッカー
@@ -218,8 +226,8 @@ fun DatePickerDialogArea(
         inputFieldFormattedText = ""
     }
 
-    Row(modifier = modifier){
-        Text(text = stringResource(id = labelResId))
+    Row(modifier = modifier.padding(8.dp)){
+        Text(text = stringResource(id = labelResId), modifier = Modifier.weight(1f))
         TextField(
             value = inputFieldFormattedText,
             onValueChange = {},
@@ -231,12 +239,14 @@ fun DatePickerDialogArea(
                     )
                 }
             },
-            modifier = Modifier.onFocusChanged { FocusState ->
-                isTextFieldFocused.value = FocusState.isFocused
-                if(isTextFieldFocused.value){
-                    onCalenderIconClick()
+            modifier = Modifier
+                .onFocusChanged { FocusState ->
+                    isTextFieldFocused.value = FocusState.isFocused
+                    if (isTextFieldFocused.value) {
+                        onCalenderIconClick()
+                    }
                 }
-            }
+                .weight(1f)
         )
         if(isDisplay){
             DatePickerDialog(
@@ -252,6 +262,7 @@ fun DatePickerDialogArea(
             }
         }
     }
+    Divider(thickness = 2.dp)
 }
 
 // デイトピッカーダイアログ用確認ボタン
@@ -277,8 +288,13 @@ fun VariableDisplayModeTaskCard(
     val isDisplayDetail = rememberSaveable(){
         mutableStateOf(false)
     }
-    Card(modifier = Modifier.padding(8.dp)) {
-        Row() {
+    Card(
+        modifier = Modifier.padding(8.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             Checkbox(
                 checked = homeUiState.taskDetail.isCompleted,
                 onCheckedChange = {flag -> onClickCheckbox(flag, homeUiState.taskDetail.id)},
@@ -291,7 +307,7 @@ fun VariableDisplayModeTaskCard(
             if(homeUiState.taskDetail.isCompleted){
                 Column(modifier = Modifier.clickable(){
                     onArchiveButtonClick(homeUiState.taskDetail.id)
-                }) {
+                }, horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
                         painter = painterResource(id = R.drawable.outline_archive_24),
                         contentDescription = null
@@ -324,9 +340,13 @@ fun VariableDisplayModeTaskCard(
                 Column(modifier = Modifier
                     .weight(1f)
                     .clickable() {
-                        val progress = if(homeUiState.taskDetail.isCompleted){ 100 }else{ homeUiState.taskDetail.progress.toIntOrNull() ?: 0 }
+                        val progress = if (homeUiState.taskDetail.isCompleted) {
+                            100
+                        } else {
+                            homeUiState.taskDetail.progress.toIntOrNull() ?: 0
+                        }
                         navigateToEditScreen(homeUiState.taskDetail.id, progress)
-                    }) {
+                    },horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_edit_24),
                         contentDescription = null
@@ -374,8 +394,14 @@ fun ArchivedTaskCard(
     onArchiveButtonClick: (Int) -> Unit,
     onDeleteButtonClick: (Int) -> Unit
 ){
-    Card(modifier = modifier){
-        Row(){
+    Card(modifier = modifier.padding(8.dp),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        )){
+        Row(
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
             Text(
                 text = homeUiState.taskDetail.name,
                 modifier = Modifier.weight(4f)
@@ -383,7 +409,8 @@ fun ArchivedTaskCard(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable() { onArchiveButtonClick(homeUiState.taskDetail.id) }
+                    .clickable() { onArchiveButtonClick(homeUiState.taskDetail.id) },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_unarchive_24),
@@ -397,7 +424,8 @@ fun ArchivedTaskCard(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable() { onDeleteButtonClick(homeUiState.taskDetail.id) }
+                    .clickable() { onDeleteButtonClick(homeUiState.taskDetail.id) },
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_delete_24),

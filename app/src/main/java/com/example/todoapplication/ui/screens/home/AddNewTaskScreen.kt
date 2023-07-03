@@ -7,15 +7,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
 import com.example.todoapplication.R
 import com.example.todoapplication.data.DisplayTaskType
-import com.example.todoapplication.ui.AppViewModelProvider
 import com.example.todoapplication.ui.TodoTopAppBar
-import kotlinx.coroutines.launch
 
 @Composable
 fun AddNewTaskScreen(
@@ -80,7 +77,7 @@ fun FormItems(
                 onCalenderIconClick = onCalenderIconClick
             )
             // セーブボタン
-            Button(onClick = onSaveClick) {
+            Button(onClick = onSaveClick,modifier = Modifier.padding(8.dp)) {
                 Text(text = stringResource(id = R.string.save_button_text))
             }
         }
