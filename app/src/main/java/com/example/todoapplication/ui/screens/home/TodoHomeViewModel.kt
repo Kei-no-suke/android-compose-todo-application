@@ -112,6 +112,15 @@ class TodoHomeViewModel(
         }
     }
 
+    fun updateProgress(progress: Int, id: Int){
+        viewModelScope.launch {
+            val currentTask = unarchiveUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            tasksRepository.updateTask(currentTask.copy(
+                progress = progress
+            ))
+        }
+    }
+
     // == アーカイブ済みタスク画面用 ================================================
 
     val archiveUiState: StateFlow<List<HomeUiState>> = tasksRepository.getArchivedTasksStream()

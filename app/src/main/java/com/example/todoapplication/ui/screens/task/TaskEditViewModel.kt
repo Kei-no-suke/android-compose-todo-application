@@ -14,6 +14,7 @@ import com.example.todoapplication.ui.screens.home.toTaskUiState
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import java.util.Date
 
 class TaskEditViewModel(
     savedStateHandle: SavedStateHandle,
@@ -45,7 +46,21 @@ class TaskEditViewModel(
     }
 
     fun updateUiState(taskDetail: TaskDetail) {
-        taskUiState = TaskUiState(taskDetail = taskDetail, isEntryValid = validateInput(taskDetail))
+        val currentProgress = taskDetail.progress.toIntOrNull() ?: 0
+        val newTaskDetail =
+            if(currentProgress == 100)
+            {
+                taskDetail.copy(
+                    isCompleted = true,
+                    completedDate = Date().time
+                )
+            }else{
+                taskDetail.copy(
+                    isCompleted = false,
+                    completedDate = null
+                )
+            }
+        taskUiState = TaskUiState(taskDetail = newTaskDetail, isEntryValid = validateInput(taskDetail))
     }
 
     fun updateIsDisplayDeadlineDatePicker(){

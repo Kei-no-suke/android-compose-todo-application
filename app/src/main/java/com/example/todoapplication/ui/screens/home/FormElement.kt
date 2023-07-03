@@ -270,7 +270,8 @@ fun ConfirmButtonInDatePickerDialog(
 fun VariableDisplayModeTaskCard(
     homeUiState: HomeUiState,
     onArchiveButtonClick: (Int) -> Unit,
-    onClickCheckbox: (Boolean, Int) -> Unit
+    onClickCheckbox: (Boolean, Int) -> Unit,
+    navigateToEditScreen: (Int, Int) -> Unit
 ){
     val nameTextBoxWeight = if(homeUiState.taskDetail.isArchived){ 3f } else { 4f }
     val isDisplayDetail = rememberSaveable(){
@@ -322,7 +323,10 @@ fun VariableDisplayModeTaskCard(
             Row(modifier = Modifier.padding(8.dp)){
                 Column(modifier = Modifier
                     .weight(1f)
-                    .clickable() {}) {
+                    .clickable() {
+                        val progress = if(homeUiState.taskDetail.isCompleted){ 100 }else{ homeUiState.taskDetail.progress.toIntOrNull() ?: 0 }
+                        navigateToEditScreen(homeUiState.taskDetail.id, progress)
+                    }) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_edit_24),
                         contentDescription = null
@@ -368,6 +372,7 @@ fun ArchivedTaskCard(
     homeUiState: HomeUiState,
     modifier: Modifier = Modifier, 
     onArchiveButtonClick: (Int) -> Unit,
+    onDeleteButtonClick: (Int) -> Unit
 ){
     Card(modifier = modifier){
         Row(){
@@ -392,7 +397,7 @@ fun ArchivedTaskCard(
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .clickable() { onArchiveButtonClick(homeUiState.taskDetail.id) }
+                    .clickable() { onDeleteButtonClick(homeUiState.taskDetail.id) }
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.outline_delete_24),
@@ -413,14 +418,16 @@ fun TaskCardList(
     modifier: Modifier = Modifier,
     homeUiStateList: List<HomeUiState>,
     onClickCheckbox: (Boolean, Int) -> Unit,
-    onArchiveButtonClick: (Int) -> Unit
+    onArchiveButtonClick: (Int) -> Unit,
+    navigateToEditScreen: (Int, Int) -> Unit
 ) {
     LazyColumn(modifier = modifier){
         items(homeUiStateList.size){
             VariableDisplayModeTaskCard(
                 homeUiState = homeUiStateList[it],
                 onArchiveButtonClick = { id -> onArchiveButtonClick(id) },
-                onClickCheckbox = {flag, id -> onClickCheckbox(flag, id)}
+                onClickCheckbox = {flag, id -> onClickCheckbox(flag, id)},
+                navigateToEditScreen = { id, progress -> navigateToEditScreen(id,progress) }
             )
         }
     }
@@ -430,13 +437,15 @@ fun TaskCardList(
 fun ArchivedTaskCardList(
     modifier: Modifier = Modifier,
     homeUiStateList: List<HomeUiState>,
-    onArchiveButtonClick: (Int) -> Unit
+    onArchiveButtonClick: (Int) -> Unit,
+    onDeleteButtonClick: (Int) -> Unit
 ){
     LazyColumn(modifier = modifier){
         items(homeUiStateList.size){
             ArchivedTaskCard(
                 homeUiState = homeUiStateList[it],
-                onArchiveButtonClick = {id -> onArchiveButtonClick(id) }
+                onArchiveButtonClick = {id -> onArchiveButtonClick(id) },
+                onDeleteButtonClick = {id -> onDeleteButtonClick(id) }
             )
         }
     }

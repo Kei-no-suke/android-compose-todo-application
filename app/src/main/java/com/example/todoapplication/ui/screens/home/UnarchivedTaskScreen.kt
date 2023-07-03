@@ -21,7 +21,8 @@ fun UnarchivedTaskScreen(
     updateDisplayTaskState: (DisplayTaskType) -> Unit,
     displayTaskState: State<DisplayTaskState>,
     onClickCheckbox: (Boolean, Int) -> Unit,
-    onArchiveButtonClick: (Int) -> Unit
+    onArchiveButtonClick: (Int) -> Unit,
+    navigateToEditScreen: (Int, Int) -> Unit
 ){
     val coroutineScope = rememberCoroutineScope()
     Scaffold(
@@ -48,7 +49,8 @@ fun UnarchivedTaskScreen(
                 modifier = Modifier.padding(innerPadding),
                 homeUiStateList = uiState.value,
                 onClickCheckbox = { flag, id -> onClickCheckbox(flag, id) },
-                onArchiveButtonClick = { id -> onArchiveButtonClick(id) }
+                onArchiveButtonClick = { id -> onArchiveButtonClick(id) },
+                navigateToEditScreen = { id, progress -> navigateToEditScreen(id, progress) }
             )
         }
 

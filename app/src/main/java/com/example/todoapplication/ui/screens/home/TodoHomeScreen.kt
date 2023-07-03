@@ -37,8 +37,7 @@ object HomeDestination : NavigationDestination {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodoHomeScreen(
-    navigateToTaskEntry: () -> Unit,
-    navigateToDetailScreen: (Int) -> Unit,
+    navigateToEditScreen: (Int) -> Unit,
     viewModel: TodoHomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
     val unarchiveUiState = viewModel.unarchiveUiState.collectAsState()
@@ -56,6 +55,10 @@ fun TodoHomeScreen(
                     viewModel.updateIsCompleted(flag, id) },
                 onArchiveButtonClick = { id ->
                     viewModel.updateUnarchiveIsArchived(id)
+                },
+                navigateToEditScreen = { id, progress ->
+                    navigateToEditScreen(id)
+                    viewModel.updateProgress(progress = progress, id = id)
                 }
             )
         }
@@ -84,7 +87,8 @@ fun TodoHomeScreen(
                 uiState = archiveUiState,
                 displayTaskState = displayTaskState,
                 updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
-                onArchiveButtonClick = { viewModel.updateArchiveIsArchived(it) }
+                onArchiveButtonClick = { viewModel.updateArchiveIsArchived(it) },
+                onDeleteButtonClick = { viewModel.deleteArchiveTask(it) }
             )
         }
         else -> {
@@ -96,6 +100,10 @@ fun TodoHomeScreen(
                     viewModel.updateIsCompleted(flag, id) },
                 onArchiveButtonClick = { id ->
                     viewModel.updateUnarchiveIsArchived(id)
+                },
+                navigateToEditScreen = { id, progress ->
+                    navigateToEditScreen(id)
+                    viewModel.updateProgress(progress = progress, id = id)
                 }
             )
         }
@@ -160,31 +168,21 @@ fun TodoBottomAppBar(
     var isArchived: Boolean
     var isUnarchived: Boolean
     var isAdd: Boolean
-    var isEdit: Boolean
     when(displayTaskState){
         DisplayTaskType.Archive -> {
             isArchived = true
             isUnarchived = false
             isAdd = false
-            isEdit = false
         }
         DisplayTaskType.Add -> {
             isArchived = false
             isUnarchived = false
             isAdd = true
-            isEdit = false
-        }
-        DisplayTaskType.Edit -> {
-            isArchived = false
-            isUnarchived = false
-            isAdd = false
-            isEdit = true
         }
         else -> {
             isArchived = false
             isUnarchived = true
             isAdd = false
-            isEdit = false
         }
     }
     val activeColor = MaterialTheme.colorScheme.primary
@@ -193,7 +191,6 @@ fun TodoBottomAppBar(
 
     val unarchivedColor = if(isUnarchived){ activeColor }else{ nonActiveColor }
     val archiveColor = if(isArchived){ activeColor }else{ nonActiveColor }
-    val editColor = if(isEdit){ activeColor }else{ unableColor }
     val addColor = if(isAdd){ activeColor }else{ nonActiveColor }
     BottomAppBar(
 
@@ -253,23 +250,6 @@ fun TodoBottomAppBar(
                 text = stringResource(id = R.string.add_button_text),
                 fontSize = 10.sp,
                 color = addColor
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .clickable(enabled = false) {}
-                .weight(1f)
-        ){
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_edit_24),
-                contentDescription = null,
-                tint = editColor
-            )
-            Text(
-                text = stringResource(id = R.string.edit_button_text),
-                fontSize = 10.sp,
-                color = editColor
             )
         }
     }

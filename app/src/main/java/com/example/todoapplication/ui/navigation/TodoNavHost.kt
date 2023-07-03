@@ -10,8 +10,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.todoapplication.ui.screens.home.HomeDestination
 import com.example.todoapplication.ui.screens.home.TodoHomeScreen
-import com.example.todoapplication.ui.screens.task.TaskDetailDestination
-import com.example.todoapplication.ui.screens.task.TaskDetailScreen
 import com.example.todoapplication.ui.screens.task.TaskEditDestination
 import com.example.todoapplication.ui.screens.task.TaskEditScreen
 
@@ -26,25 +24,7 @@ fun TodoNavHost(
     ){
         composable(route = HomeDestination.route){
             TodoHomeScreen(
-                navigateToTaskEntry = {},
-                navigateToDetailScreen = {
-                    Log.d("NavHost", it.toString())
-                    navController.navigate("${TaskDetailDestination.route}/${it}")
-                }
-            )
-        }
-
-        composable(
-            route = TaskDetailDestination.routeWithArgs,
-            arguments = listOf(navArgument(TaskDetailDestination.taskIdArg){
-                type = NavType.IntType
-            })
-        ){
-            TaskDetailScreen(
-                navigateToEditItem = {
-                    navController.navigate("${TaskEditDestination.route}/${it}")
-                },
-                navigateBack = { navController.popBackStack() }
+                navigateToEditScreen = { navController.navigate("${TaskEditDestination.route}/${it}") }
             )
         }
 

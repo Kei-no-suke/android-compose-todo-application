@@ -7,7 +7,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.todoapplication.TodoApplication
 import com.example.todoapplication.ui.screens.home.TodoHomeViewModel
-import com.example.todoapplication.ui.screens.task.TaskDetailViewModel
 import com.example.todoapplication.ui.screens.task.TaskEditViewModel
 
 object AppViewModelProvider {
@@ -15,14 +14,6 @@ object AppViewModelProvider {
         // TodoHomeViewModelの初期化
         initializer {
             TodoHomeViewModel(todoApplication().container.tasksRepository)
-        }
-
-        // TaskDetailViewModelの初期化
-        initializer {
-            TaskDetailViewModel(
-                this.createSavedStateHandle(),
-                todoApplication().container.tasksRepository
-            )
         }
 
         // TaskEditViewModelの初期化

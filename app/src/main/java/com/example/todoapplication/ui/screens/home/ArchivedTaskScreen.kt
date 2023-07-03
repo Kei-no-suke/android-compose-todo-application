@@ -20,7 +20,8 @@ fun ArchivedTaskScreen(
     uiState: State<List<HomeUiState>>,
     updateDisplayTaskState: (DisplayTaskType) -> Unit,
     displayTaskState: State<DisplayTaskState>,
-    onArchiveButtonClick: (Int) -> Unit
+    onArchiveButtonClick: (Int) -> Unit,
+    onDeleteButtonClick: (Int) -> Unit
 ){
     Scaffold(
         topBar = {
@@ -45,7 +46,8 @@ fun ArchivedTaskScreen(
             ArchivedTaskCardList(
                 modifier = Modifier.padding(innerPadding),
                 homeUiStateList = uiState.value,
-                onArchiveButtonClick = { onArchiveButtonClick(it) }
+                onArchiveButtonClick = { onArchiveButtonClick(it) },
+                onDeleteButtonClick = { onDeleteButtonClick(it) }
             )
         }
 
