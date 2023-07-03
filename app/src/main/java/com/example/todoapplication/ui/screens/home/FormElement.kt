@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -88,11 +89,12 @@ fun TaskProgressDisplayBox(
 // プログレスバー単体
 @Composable
 fun TaskProgressBar(
-    progress: Float
+    progress: Float,
+    modifier: Modifier = Modifier
 ){
     LinearProgressIndicator(
         progress = progress,
-        modifier = Modifier
+        modifier = modifier
             .height(12.dp)
             .border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
     )
@@ -101,10 +103,12 @@ fun TaskProgressBar(
 // 進捗テキストボックス
 @Composable
 fun TaskProgressTextBox(
-    progress: Float
+    progress: Float,
+    modifier: Modifier = Modifier
 ){
     Text(
-        text = stringResource(R.string.progress_text_box, (progress * 100f).toInt().toString())
+        text = stringResource(R.string.progress_text_box, (progress * 100f).toInt().toString()),
+        modifier = modifier
     )
 }
 
@@ -123,6 +127,21 @@ fun DeadlineTextBox(
     }
 }
 
+// 締め切り日テキストボックス
+@Composable
+fun completedDateTextBox(
+    completedDate: Long,
+    modifier: Modifier = Modifier
+){
+    val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
+
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(id = R.string.completedDate_text_box, simpleDateFormat.format(Date(completedDate)))
+        )
+    }
+}
+
 // ラベル付き、締め切り日テキスト表示
 @Composable
 fun TaskDeadlineBox(
@@ -137,8 +156,6 @@ fun TaskDeadlineBox(
         Text(text = simpleDateFormat.format(Date(deadline)))
     }
 }
-
-
 
 // テキストフィールド
 @OptIn(ExperimentalMaterial3Api::class)
@@ -259,7 +276,7 @@ fun VariableDisplayModeTaskCard(
     val isDisplayDetail = rememberSaveable(){
         mutableStateOf(false)
     }
-    Card {
+    Card(modifier = Modifier.padding(8.dp)) {
         Row() {
             Checkbox(
                 checked = homeUiState.taskDetail.isCompleted,
@@ -299,13 +316,92 @@ fun VariableDisplayModeTaskCard(
         }
         if(isDisplayDetail.value){
             Divider(thickness = 2.dp)
-            val progress = homeUiState.taskDetail.progress.toFloat() / 100f
-            TaskProgressBar(progress = progress)
-            Row(){
-                TaskProgressTextBox(progress = progress)
-                if(homeUiState.taskDetail.deadline != null){
-                    DeadlineTextBox(deadline = homeUiState.taskDetail.deadline)
+
+            val progress: Float = if(homeUiState.taskDetail.isCompleted){ 1f }
+            else{ homeUiState.taskDetail.progress.toFloat() / 100f }
+            Row(modifier = Modifier.padding(8.dp)){
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .clickable() {}) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_edit_24),
+                        contentDescription = null
+                    )
+                    Text(
+                        text = stringResource(id = R.string.edit_button_text),
+                        fontSize = 10.sp
+                    )
                 }
+                Column(modifier = Modifier.weight(6f)) {
+                    TaskProgressBar(
+                        progress = progress,
+                        modifier = Modifier.padding(vertical = 5.dp)
+                    )
+                    Row(){
+                        TaskProgressTextBox(
+                            progress = progress,
+                            modifier = Modifier.padding(end = 5.dp)
+                        )
+                        if(homeUiState.taskDetail.deadline != null){
+                            DeadlineTextBox(deadline = homeUiState.taskDetail.deadline)
+                        }
+                    }
+
+                }
+            }
+            if(homeUiState.taskDetail.completedDate != null){
+                Row(){
+                    Spacer(modifier = Modifier.weight(1f))
+                    completedDateTextBox(
+                        completedDate = homeUiState.taskDetail.completedDate,
+                        modifier = Modifier.weight(6f)
+                    )
+                }
+            }
+
+        }
+    }
+}
+
+@Composable
+fun ArchivedTaskCard(
+    homeUiState: HomeUiState,
+    modifier: Modifier = Modifier, 
+    onArchiveButtonClick: (Int) -> Unit,
+){
+    Card(modifier = modifier){
+        Row(){
+            Text(
+                text = homeUiState.taskDetail.name,
+                modifier = Modifier.weight(4f)
+            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable() { onArchiveButtonClick(homeUiState.taskDetail.id) }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_unarchive_24),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(id = R.string.unarchive_button_text),
+                    fontSize = 10.sp
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .clickable() { onArchiveButtonClick(homeUiState.taskDetail.id) }
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.outline_delete_24),
+                    contentDescription = null
+                )
+                Text(
+                    text = stringResource(id = R.string.delete_button_text),
+                    fontSize = 10.sp
+                )
             }
         }
     }
@@ -325,6 +421,22 @@ fun TaskCardList(
                 homeUiState = homeUiStateList[it],
                 onArchiveButtonClick = { id -> onArchiveButtonClick(id) },
                 onClickCheckbox = {flag, id -> onClickCheckbox(flag, id)}
+            )
+        }
+    }
+}
+
+@Composable
+fun ArchivedTaskCardList(
+    modifier: Modifier = Modifier,
+    homeUiStateList: List<HomeUiState>,
+    onArchiveButtonClick: (Int) -> Unit
+){
+    LazyColumn(modifier = modifier){
+        items(homeUiStateList.size){
+            ArchivedTaskCard(
+                homeUiState = homeUiStateList[it],
+                onArchiveButtonClick = {id -> onArchiveButtonClick(id) }
             )
         }
     }

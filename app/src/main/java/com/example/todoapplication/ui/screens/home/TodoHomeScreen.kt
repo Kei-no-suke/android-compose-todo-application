@@ -23,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.todoapplication.R
+import com.example.todoapplication.data.DisplayTaskType
 import com.example.todoapplication.ui.AppViewModelProvider
 import com.example.todoapplication.ui.navigation.NavigationDestination
 import com.example.todoapplication.ui.theme.TodoApplicationTheme
+import kotlinx.coroutines.launch
 
 object HomeDestination : NavigationDestination {
     override val route: String = "home"
@@ -39,16 +41,65 @@ fun TodoHomeScreen(
     navigateToDetailScreen: (Int) -> Unit,
     viewModel: TodoHomeViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ){
-    val uiState = viewModel.homeUiState.collectAsState()
+    val unarchiveUiState = viewModel.unarchiveUiState.collectAsState()
+    val archiveUiState = viewModel.archiveUiState.collectAsState()
+    val displayTaskState = viewModel.displayTaskState.collectAsState()
     val coroutineScope = rememberCoroutineScope()
 
-    when(viewModel.homeArchivedState.homeScreenState){
-        HomeScreenState.Unarchived.name -> UnarchivedTaskScreen()
-        HomeScreenState.Add.name -> AddNewTaskScreen()
-        HomeScreenState.Archive.name -> ArchivedTaskScreen()
+    when(displayTaskState.value.currentDisplayTaskType){
+        DisplayTaskType.Unarchived -> {
+            UnarchivedTaskScreen(
+                uiState = unarchiveUiState,
+                displayTaskState = displayTaskState,
+                updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
+                onClickCheckbox = { flag, id ->
+                    viewModel.updateIsCompleted(flag, id) },
+                onArchiveButtonClick = { id ->
+                    viewModel.updateUnarchiveIsArchived(id)
+                }
+            )
+        }
+        DisplayTaskType.Add -> {
+            AddNewTaskScreen(
+                displayTaskState = displayTaskState,
+                taskUiState = viewModel.taskUiState,
+                updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
+                onDeadlineClickConfirmButton = { deadline ->
+                    viewModel.updateDeadline(deadline)
+                    viewModel.updateIsDisplayDeadlineDatePicker()
+                },
+                onDismissRequest = { viewModel.updateIsDisplayDeadlineDatePicker() },
+                onCalenderIconClick = { viewModel.updateIsDisplayDeadlineDatePicker() },
+                onSaveClick = {
+                    coroutineScope.launch {
+                        viewModel.saveTask()
+                        viewModel.updateDisplayTaskState(DisplayTaskType.Unarchived)
+                    }
+                },
+                onNameValueChange = { name -> viewModel.updateName(name) }
+            )
+        }
+        DisplayTaskType.Archive -> {
+            ArchivedTaskScreen(
+                uiState = archiveUiState,
+                displayTaskState = displayTaskState,
+                updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
+                onArchiveButtonClick = { viewModel.updateArchiveIsArchived(it) }
+            )
+        }
+        else -> {
+            UnarchivedTaskScreen(
+                uiState = unarchiveUiState,
+                displayTaskState = displayTaskState,
+                updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
+                onClickCheckbox = { flag, id ->
+                    viewModel.updateIsCompleted(flag, id) },
+                onArchiveButtonClick = { id ->
+                    viewModel.updateUnarchiveIsArchived(id)
+                }
+            )
+        }
     }
-
-
 }
 
 
@@ -103,27 +154,27 @@ fun TaskCard(
 
 @Composable
 fun TodoBottomAppBar(
-    updateHomeScreenState: (String) -> Unit,
-    homeScreenState: String
+    updateDisplayTaskState: (DisplayTaskType) -> Unit,
+    displayTaskState: DisplayTaskType
 ){
     var isArchived: Boolean
     var isUnarchived: Boolean
     var isAdd: Boolean
     var isEdit: Boolean
-    when(homeScreenState){
-        HomeScreenState.Archive.name -> {
+    when(displayTaskState){
+        DisplayTaskType.Archive -> {
             isArchived = true
             isUnarchived = false
             isAdd = false
             isEdit = false
         }
-        HomeScreenState.Add.name -> {
+        DisplayTaskType.Add -> {
             isArchived = false
             isUnarchived = false
             isAdd = true
             isEdit = false
         }
-        HomeScreenState.Edit.name -> {
+        DisplayTaskType.Edit -> {
             isArchived = false
             isUnarchived = false
             isAdd = false
@@ -151,7 +202,7 @@ fun TodoBottomAppBar(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(enabled = !isUnarchived) {
-                    updateHomeScreenState(HomeScreenState.Unarchived.name)
+                    updateDisplayTaskState(DisplayTaskType.Unarchived)
                 }
                 .weight(1f)
         ){
@@ -170,7 +221,7 @@ fun TodoBottomAppBar(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(enabled = !isArchived) {
-                    updateHomeScreenState(HomeScreenState.Archive.name)
+                    updateDisplayTaskState(DisplayTaskType.Archive)
                 }
                 .weight(1f)
         ){
@@ -189,7 +240,7 @@ fun TodoBottomAppBar(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .clickable(enabled = !isAdd) {
-                    updateHomeScreenState(HomeScreenState.Add.name)
+                    updateDisplayTaskState(DisplayTaskType.Add)
                 }
                 .weight(1f)
         ){
@@ -228,6 +279,6 @@ fun TodoBottomAppBar(
 @Composable
 fun BottomAppBarPreview() {
     TodoApplicationTheme(useDarkTheme = false) {
-        TodoBottomAppBar({}, HomeScreenState.Unarchived.name)
+        TodoBottomAppBar({}, DisplayTaskType.Unarchived)
     }
 }

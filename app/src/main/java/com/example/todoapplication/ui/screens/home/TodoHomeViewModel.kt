@@ -12,11 +12,10 @@ import kotlinx.coroutines.launch
 import java.util.Date
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.example.todoapplication.data.DisplayTaskType
 import com.example.todoapplication.data.Task
-
-enum class HomeScreenState{
-    Archive, Unarchived, Add, Edit
-}
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 class TodoHomeViewModel(
     private val tasksRepository: TasksRepository
@@ -66,38 +65,37 @@ class TodoHomeViewModel(
 
     // == home画面用 ================================================
     // ホーム画面の状態 | Archive, Unarchived, Add |
-    var homeArchivedState by mutableStateOf(HomeArchivedState(homeScreenState = HomeScreenState.Unarchived.name))
-        private set
+    private val _displayTaskState = MutableStateFlow(DisplayTaskState())
+    val displayTaskState: StateFlow<DisplayTaskState> = _displayTaskState
 
-    // 未アーカイブタスクのuiStateの取得
-    val homeUiState: StateFlow<List<HomeUiState>> =
-        if(homeArchivedState.homeScreenState == HomeScreenState.Archive.name) {
-            tasksRepository.getArchivedTasksStream().map { List ->
-                List!!.map {
-                    HomeUiState(it.toTaskDetail())
-                }
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = listOf()
-            )
-        }else{
-            tasksRepository.getUnarchivedTasksStream().map { List ->
-                List!!.map {
-                    HomeUiState(it.toTaskDetail())
-                }
-            }.stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-                initialValue = listOf()
+    // ホーム画面の表示状態を更新する | Archive, Unarchived, Add |
+    fun updateDisplayTaskState(displayTaskType: DisplayTaskType){
+        _displayTaskState.update {
+            it.copy(
+                currentDisplayTaskType = displayTaskType
             )
         }
+    }
+
+    // == 未アーカイブタスク画面用 ================================================
+
+    // 未アーカイブタスクのuiStateの取得
+    val unarchiveUiState: StateFlow<List<HomeUiState>> = tasksRepository.getUnarchivedTasksStream()
+        .map { List ->
+            List!!.map {
+                HomeUiState(it.toTaskDetail())
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = listOf()
+        )
 
     // タスクを完了済みに変更する機能
     // タスク完了と同時に完了日の設定を行う
     fun updateIsCompleted(isCompletedFlag: Boolean = false, id: Int){
         viewModelScope.launch {
-            val currentTask = homeUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            val currentTask = unarchiveUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
             tasksRepository.updateTask(currentTask.copy(
                 isCompleted = isCompletedFlag,
                 completedDate = if(isCompletedFlag){ Date() }else{ null }
@@ -105,18 +103,45 @@ class TodoHomeViewModel(
         }
     }
 
-    fun updateIsArchived(id: Int){
+    fun updateUnarchiveIsArchived(id: Int){
         viewModelScope.launch {
-            val currentTask = homeUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            val currentTask = unarchiveUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
             tasksRepository.updateTask(currentTask.copy(
                 isArchived = !currentTask.isArchived
             ))
         }
     }
 
-    // ホーム画面の表示状態を更新する | Archive, Unarchived, Add |
-    fun updateHomeArchivedState(homeScreenState: String){
-        homeArchivedState = HomeArchivedState(homeScreenState)
+    // == アーカイブ済みタスク画面用 ================================================
+
+    val archiveUiState: StateFlow<List<HomeUiState>> = tasksRepository.getArchivedTasksStream()
+        .map { List ->
+            List!!.map {
+                HomeUiState(it.toTaskDetail())
+            }
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+            initialValue = listOf()
+        )
+
+    fun updateArchiveIsArchived(id: Int){
+        viewModelScope.launch {
+            val currentTask = archiveUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            tasksRepository.updateTask(currentTask.copy(
+                isArchived = !currentTask.isArchived,
+                isCompleted = false,
+                progress = 0,
+                completedDate = null
+            ))
+        }
+    }
+
+    fun deleteArchiveTask(id: Int){
+        viewModelScope.launch {
+            val currentTask = archiveUiState.value.find{ it.taskDetail.id == id }!!.taskDetail.toTask()
+            tasksRepository.deleteTask(currentTask)
+        }
     }
 
     companion object {
@@ -124,12 +149,16 @@ class TodoHomeViewModel(
     }
 }
 
-data class HomeUiState(
-    val taskDetail: TaskDetail = TaskDetail()
+// 画面状態
+
+data class DisplayTaskState(
+    val currentDisplayTaskType: DisplayTaskType = DisplayTaskType.Unarchived
 )
 
-data class HomeArchivedState(
-    val homeScreenState: String
+// データベースの情報状態
+
+data class HomeUiState(
+    val taskDetail: TaskDetail = TaskDetail()
 )
 
 data class TaskUiState(

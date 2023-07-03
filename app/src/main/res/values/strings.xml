@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Todo Application</string>
+    <string name="archive_task_title">アーカイブ</string>
+    <string name="task_list_title">タスクリスト</string>
     <string name="task_detail_title">Task Detail</string>
     <string name="task_edit_title">Task Edit</string>
-    <string name="task_entry_title">Task Entry</string>
+    <string name="task_entry_title">タスク追加</string>
     <string name="task_none_text">タスクがありません</string>
     <string name="back_button">Back</string>
     <string name="task_name_label">タスク名</string>
@@ -10,13 +12,15 @@
     <string name="progress_label">進捗</string>
     <string name="confirm_button_text">確定</string>
     <string name="form_item_deadline_text">締め切り日</string>
-    <string name="save_button_text">Save</string>
-    <string name="delete_button_text">Delete</string>
     <string name="progress_value_unit">%s %%</string>
     <string name="task_list">task</string>
     <string name="archived_list">archived</string>
     <string name="add_button_text">new</string>
     <string name="edit_button_text">edit</string>
     <string name="progress_text_box">進捗:%s %%</string>
-    <string name="deadline_text_box">締め切り日:%s</string>
+    <string name="deadline_text_box">締め切り日: %s</string>
+    <string name="completedDate_text_box">完了日: %s</string>
+    <string name="unarchive_button_text">unarchive</string>
+    <string name="save_button_text">save</string>
+    <string name="delete_button_text">delete</string>
 </resources>
