@@ -1,6 +1,8 @@
 package com.keinosuke.todoapplication.ui.screens.home
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -16,6 +18,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,6 +43,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.keinosuke.todoapplication.R
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.util.Date
 
 // ラベル付きテキスト表示
@@ -215,16 +219,22 @@ fun TextFieldArea(
 @Composable
 fun DatePickerDialogArea(
     @StringRes labelResId: Int,
-    inputFieldText: Long?,
+    inputFieldLong: Long?,
     isDisplay: Boolean,
     onClickConfirmButton: (Long?) -> Unit,
     onDismissRequest: () -> Unit,
     onCalenderIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = inputFieldText
-    )
+    var datePickerState = if(inputFieldLong != null){
+        rememberDatePickerState(
+            initialSelectedDateMillis = inputFieldLong
+        )
+    }else{
+        rememberDatePickerState(
+            initialSelectedDateMillis = Instant.now().toEpochMilli()
+        )
+    }
 
     val isTextFieldFocused = remember {
         mutableStateOf(false)
@@ -233,7 +243,7 @@ fun DatePickerDialogArea(
     val simpleDateFormat = SimpleDateFormat("yyyy/MM/dd")
     var inputFieldFormattedText: String
     try{
-        inputFieldFormattedText = if(inputFieldText == null){ "" } else {
+        inputFieldFormattedText = if(inputFieldLong == null){ "" } else {
             simpleDateFormat.format(Date(datePickerState.selectedDateMillis!!))
         }
     }catch(e: Exception){

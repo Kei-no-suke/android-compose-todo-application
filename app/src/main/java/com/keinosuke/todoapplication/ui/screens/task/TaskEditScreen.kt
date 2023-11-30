@@ -1,5 +1,7 @@
 package com.keinosuke.todoapplication.ui.screens.task
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -77,6 +79,7 @@ fun TaskEditScreen(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditFormItem(
     formUiState: FormUiState,
@@ -109,7 +112,7 @@ fun EditFormItem(
         )
         DatePickerDialogArea(
             labelResId = R.string.form_item_deadline_text,
-            inputFieldText = deadlineValue,
+            inputFieldLong = deadlineValue,
             isDisplay = isDisplayDeadlineDatePicker,
             onClickConfirmButton = { deadline -> onClickDeadlineConfirmButton(deadline) },
             onDismissRequest = onDismissRequest,

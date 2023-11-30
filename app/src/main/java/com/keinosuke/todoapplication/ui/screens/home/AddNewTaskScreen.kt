@@ -79,7 +79,7 @@ fun FormItems(
             )
             DatePickerDialogArea(
                 labelResId = R.string.form_item_deadline_text,
-                inputFieldText = taskUiState.taskDetail.deadline,
+                inputFieldLong = taskUiState.taskDetail.deadline,
                 isDisplay = taskUiState.isDisplayDeadlineDatePicker,
                 onClickConfirmButton = {deadline -> onDeadlineClickConfirmButton(deadline)},
                 onDismissRequest = onDismissRequest,
