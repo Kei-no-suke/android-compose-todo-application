@@ -14,10 +14,52 @@ OS: Windows 11
 minSdkVersion: 26  
 targetSdkVersion: 33  
 
-## アプリのメイン画面
+## 機能説明
+### タスク一覧画面
+<p align="center">
+  <img src="img/task-list.png" width=300px>
+</p>
+<p align="center">
+  図1. タスク一覧画面
+</p>
+<p align="center">
+  <img src="img/done-card.png" width=300px>
+</p>
+<p align="center">
+  図2. 完了状態のタスクカード
+</p>
 
-## 利用手順
+タスク一覧画面です。この画面では、タスクが一覧表示されます。チェックボックスをタップすることでタスクの完了、未完了を切り替えることができます。editボタンをクリックするとタスク編集画面へ遷移します。タスクを完了状態にすると図2のようになり、archiveボタン、タスク完了日が新たに表示されます。archiveボタンをタップするとタスクはアーカイブ状態となり、タスク一覧画面では表示されなくなります。
 
+### アーカイブ一覧画面
+<p align="center">
+  <img src="img/archive-list.png" width=300px>
+</p>
+<p align="center">
+  図3. アーカイブ一覧画面
+</p>
+
+アーカイブ一覧画面です。この画面では、アーカイブ状態のタスクが一覧表示されます。unarchiveボタンをタップするとタスクは非アーカイブ状態となり、アーカイブ一覧画面では表示されなくなります。deleteボタンをタップするとタスクは削除され、タスク一覧画面でもアーカイブ一覧画面でも表示されなくなります。
+
+### タスク追加画面
+<p align="center">
+  <img src="img/task-add.png" width=300px>
+</p>
+<p align="center">
+  図4. タスク追加画面
+</p>
+
+タスク追加画面です。タスクの内容を入力してsaveボタンをタップすることで新しいタスクが追加されます。
+
+### タスク編集画面
+<p align="center">
+  <img src="img/task-edit.png" width=300px>
+</p>
+<p align="center">
+  図5. タスク編集画面
+</p>
+
+タスク編集画面です。タスクの内容を入力してsaveボタンをタップすることでタスクの内容が更新されます。
 
 ## 使用ライブラリ
 ### Room
