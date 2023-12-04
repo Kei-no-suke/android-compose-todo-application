@@ -8,11 +8,11 @@
 >このコードにはリリース前の変更も含まれています。  
 
 ## 想定環境
-使用言語: Kotlin
-Android Studio Hedgehog | 2023.1.1
-OS: Windows 11
-minSdkVersion: 26
-targetSdkVersion: 33
+使用言語: Kotlin  
+Android Studio Hedgehog | 2023.1.1  
+OS: Windows 11  
+minSdkVersion: 26  
+targetSdkVersion: 33  
 
 ## アプリのメイン画面
 
