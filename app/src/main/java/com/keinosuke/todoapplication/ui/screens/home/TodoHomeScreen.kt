@@ -93,23 +93,6 @@ fun TodoHomeScreen(
                 resetAddScreen = { viewModel.resetAddScreen() }
             )
         }
-        else -> {
-            UnarchivedTaskScreen(
-                uiState = unarchiveUiState,
-                displayTaskState = displayTaskState,
-                updateDisplayTaskState = { viewModel.updateDisplayTaskState(it) },
-                onClickCheckbox = { flag, id ->
-                    viewModel.updateIsCompleted(flag, id) },
-                onArchiveButtonClick = { id ->
-                    viewModel.updateUnarchiveIsArchived(id)
-                },
-                navigateToEditScreen = { id, progress ->
-                    navigateToEditScreen(id)
-                    viewModel.updateProgress(progress = progress, id = id)
-                },
-                resetAddScreen = { viewModel.resetAddScreen() }
-            )
-        }
     }
 }
 

@@ -21,6 +21,7 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -98,7 +99,7 @@ fun TaskProgressBar(
     modifier: Modifier = Modifier
 ){
     LinearProgressIndicator(
-        progress = progress,
+        progress = { progress },
         modifier = modifier
             .height(12.dp)
             .border(width = 1.dp, color = MaterialTheme.colorScheme.onSurface)
@@ -211,7 +212,7 @@ fun TextFieldArea(
             )
         }
     }
-    Divider(thickness = 2.dp)
+    HorizontalDivider(thickness = 2.dp)
 }
 
 // デイトピッカー
@@ -287,7 +288,7 @@ fun DatePickerDialogArea(
             }
         }
     }
-    Divider(thickness = 2.dp)
+    HorizontalDivider(thickness = 2.dp)
 }
 
 // デイトピッカーダイアログ用確認ボタン
@@ -357,20 +358,20 @@ fun VariableDisplayModeTaskCard(
             }
         }
         if(isDisplayDetail.value){
-            Divider(thickness = 2.dp)
+            HorizontalDivider(thickness = 2.dp)
 
-            val progress: Float = if(homeUiState.taskDetail.isCompleted){ 1f }
+            val progressFloat: Float = if(homeUiState.taskDetail.isCompleted){ 1f }
             else{ homeUiState.taskDetail.progress.toFloat() / 100f }
             Row(modifier = Modifier.padding(8.dp)){
                 Column(modifier = Modifier
                     .weight(1f)
                     .clickable() {
-                        val progress = if (homeUiState.taskDetail.isCompleted) {
+                        val progressInt = if (homeUiState.taskDetail.isCompleted) {
                             100
                         } else {
                             homeUiState.taskDetail.progress.toIntOrNull() ?: 0
                         }
-                        navigateToEditScreen(homeUiState.taskDetail.id, progress)
+                        navigateToEditScreen(homeUiState.taskDetail.id, progressInt)
                     },horizontalAlignment = Alignment.CenterHorizontally) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_edit_24),
@@ -383,12 +384,12 @@ fun VariableDisplayModeTaskCard(
                 }
                 Column(modifier = Modifier.weight(6f)) {
                     TaskProgressBar(
-                        progress = progress,
+                        progress = progressFloat,
                         modifier = Modifier.padding(vertical = 5.dp)
                     )
                     Row(){
                         TaskProgressTextBox(
-                            progress = progress,
+                            progress = progressFloat,
                             modifier = Modifier.padding(end = 5.dp)
                         )
                         if(homeUiState.taskDetail.deadline != null){

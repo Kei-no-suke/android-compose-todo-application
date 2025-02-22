@@ -26,7 +26,6 @@ fun UnarchivedTaskScreen(
     navigateToEditScreen: (Int, Int) -> Unit,
     resetAddScreen: () -> Unit
 ){
-    val coroutineScope = rememberCoroutineScope()
     Scaffold(
         topBar = {
             TodoTopAppBar(

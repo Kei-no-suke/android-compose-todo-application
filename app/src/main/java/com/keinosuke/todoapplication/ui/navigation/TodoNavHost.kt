@@ -29,7 +29,7 @@ fun TodoNavHost(
 
         composable(
             route = TaskEditDestination.routeWithArgs,
-            arguments = listOf(navArgument(TaskEditDestination.taskIdArg){
+            arguments = listOf(navArgument(TaskEditDestination.TASK_ID_ARG){
                 type = NavType.IntType
             })
         ){

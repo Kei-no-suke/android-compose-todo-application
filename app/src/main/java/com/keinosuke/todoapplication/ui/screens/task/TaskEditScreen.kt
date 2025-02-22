@@ -1,7 +1,5 @@
 package com.keinosuke.todoapplication.ui.screens.task
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
@@ -29,15 +27,14 @@ import kotlinx.coroutines.launch
 object TaskEditDestination : NavigationDestination {
     override val route: String = "task_edit"
     override val titleRes: Int = R.string.task_edit_title
-    const val taskIdArg = "taskId"
-    val routeWithArgs = "$route/{$taskIdArg}"
+    const val TASK_ID_ARG = "taskId"
+    val routeWithArgs = "$route/{$TASK_ID_ARG}"
 }
 
 @Composable
 fun TaskEditScreen(
     navigateBack: () -> Unit,
     onNavigateUp: () -> Unit,
-    modifier: Modifier = Modifier,
     viewModel: TaskEditViewModel = viewModel(factory = AppViewModelProvider.Factory)
 ) {
     val formUiState = viewModel.formUiState.collectAsState()
@@ -79,7 +76,6 @@ fun TaskEditScreen(
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EditFormItem(
     formUiState: FormUiState,

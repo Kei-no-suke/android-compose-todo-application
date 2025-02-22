@@ -31,7 +31,7 @@ class TaskEditViewModel(
     private val _formUiState = MutableStateFlow(FormUiState())
     val formUiState: StateFlow<FormUiState> = _formUiState
 
-    private val taskId: Int = checkNotNull(savedStateHandle[TaskEditDestination.taskIdArg])
+    private val taskId: Int = checkNotNull(savedStateHandle[TaskEditDestination.TASK_ID_ARG])
 
     init {
         viewModelScope.launch {
