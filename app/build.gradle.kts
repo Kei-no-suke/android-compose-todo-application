@@ -81,7 +81,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-savedstate:2.8.7")
 
     // Navigation
-    val nav_version = "2.8.7"
+    val nav_version = "2.8.8"
 
     implementation("androidx.navigation:navigation-fragment-ktx:${nav_version}")
     implementation("androidx.navigation:navigation-ui-ktx:${nav_version}")
