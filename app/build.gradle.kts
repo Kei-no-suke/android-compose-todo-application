@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp") version "2.1.10-1.0.31"
-    id("org.jetbrains.kotlin.plugin.compose") version "2.1.20-RC3"
+    id("org.jetbrains.kotlin.plugin.compose") version "2.1.20"
 }
 
 android {
@@ -51,7 +51,7 @@ android {
 dependencies {
 
     implementation("androidx.core:core-ktx:1.15.0")
-    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.10"))
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:2.1.20"))
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.7")
     implementation("androidx.activity:activity-compose:1.10.1")
     implementation(platform("androidx.compose:compose-bom:2025.03.00"))
