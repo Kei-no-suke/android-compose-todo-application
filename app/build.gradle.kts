@@ -88,7 +88,7 @@ dependencies {
 
     implementation("androidx.navigation:navigation-compose:${nav_version}")
 
-    implementation("androidx.compose.material3:material3:1.3.1")
+    implementation("androidx.compose.material3:material3:1.4.0")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.2.1")
