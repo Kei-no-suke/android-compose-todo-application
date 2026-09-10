@@ -61,7 +61,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
     // Room
-    val room_version = "2.6.1"
+    val room_version = "2.8.5"
 
     implementation("androidx.room:room-runtime:${room_version}")
     annotationProcessor("androidx.room:room-compiler:${room_version}")
